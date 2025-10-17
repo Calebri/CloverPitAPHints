@@ -4,6 +4,6 @@
     "website_url": "https://github.com/Calebri/CloverPitAPHints",
     "description": "Archipelago hint game implementation for CloverPit",
     "dependencies": [
-        
+        "ModdingAPIs-CloverAPI-0.1.1"
     ]
 }

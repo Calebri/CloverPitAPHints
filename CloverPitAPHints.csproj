@@ -27,6 +27,12 @@
     <Reference Include="Unity.UI">
       <HintPath>refs\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="CloverAPI">
+      <HintPath>refs\CloverAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>refs\Assembly-CSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">

@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 namespace CloverPitAPHints;
 
 [BepInPlugin("github.calebri.cloverpitaphints", "CloverPitAPHints", "1.0.0")]
+[BepInDependency("IngoH.cloverpit.CloverPitExampleMod", BepInDependency.DependencyFlags.HardDependency)]
 public class Plugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Logger;

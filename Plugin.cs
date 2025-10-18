@@ -4,15 +4,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using System.IO;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
 using BepInEx.Configuration;
 using System.Collections.ObjectModel;
+using CloverAPI.Content.Charms;
 
 namespace CloverPitAPHints;
 
 [BepInPlugin("github.calebri.cloverpitaphints", "CloverPitAPHints", "1.0.0")]
-[BepInDependency("IngoH.cloverpit.CloverPitExampleMod", BepInDependency.DependencyFlags.HardDependency)]
+[BepInDependency("ModdingAPIs.cloverpit.CloverAPI", BepInDependency.DependencyFlags.HardDependency)]
 public class Plugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Logger;
@@ -23,7 +25,13 @@ public class Plugin : BaseUnityPlugin
     private float timer = 0;
     private int deadnumOld = 0;
 
+    private string ImagesPath;
+
+    private static PowerupScript.Identifier charm1;
+
+    // Settings Config
     private ConfigEntry<int> hintThresh;
+    private ConfigEntry<bool> charmsEnabled;
 
     // AP Variables
     private ConfigEntry<string> ip;
@@ -38,10 +46,13 @@ public class Plugin : BaseUnityPlugin
         Logger = base.Logger;
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
+        ImagesPath = Path.Combine(Path.GetDirectoryName(Info.Location), "img");
+
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         // Config Initialization
         hintThresh = Config.Bind<int>("Settings", "hintThresh", 3, "The first deadline that will give you a hint upon reaching it.");
+        charmsEnabled = Config.Bind<bool>("Settings", "charmsEnabled", true, "Controls if the custom charms should be enabled. Set to false to disable custom charms.");
 
         ip = Config.Bind<string>("Archipelago", "ip", "localhost", "Server IP");
         port = Config.Bind<int>("Archipelago", "port", 38281, "Server port.");
@@ -49,10 +60,11 @@ public class Plugin : BaseUnityPlugin
         pass = Config.Bind<string>("Archipelago", "password", "", "Server password.");
 
         session = ArchipelagoSessionFactory.CreateSession(ip.Value, port.Value);
+        
+        if (charmsEnabled.Value) { RegisterCharms(); }
 
         // Server Connection
         Logger.LogInfo("Attempting to connect to AP server...");
-
         APConnect(username.Value, pass.Value);
     }
 
@@ -75,7 +87,25 @@ public class Plugin : BaseUnityPlugin
             return;
         }
     }
-    
+
+    private void RegisterCharms()
+    {
+        Logger.LogInfo("Registering charms...");
+        charm1 = CharmManager.Builder("CloverPitAPHints", "hintCharm")
+            .WithName("1 Hint")
+            .WithDescription("Grants 1 hint instantly.")
+            .WithIsInstantPowerup(true)
+            .WithStartingPrice(PowerupScript.PRICE_NORMAL)
+            .WithTextureModel(Path.Combine(ImagesPath, "AP.png"))
+            .WithStoreRerollChance(PowerupScript.STORE_REROLL_CHANCE_COMMON)
+            .WithOnEquipEvent(_ =>
+            {
+                SendHint();
+            })
+            .BuildAndRegister();
+        Logger.LogInfo($"Registered charm {charm1}");
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode lsm) // Recording exsistance / absence of TMP UI elements in scene
     {
         if (scene.name == "03GameScene") // 03GameScene is the room scene
@@ -134,7 +164,7 @@ public class Plugin : BaseUnityPlugin
             return int.Parse(tmpro.text.Split(' ')[1].Substring(1));
         }
     }
-    
+
     private void SendHint()
     {
         ReadOnlyCollection<long> missing = session.Locations.AllMissingLocations;

@@ -51,11 +51,11 @@ public class Plugin : BaseUnityPlugin
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         // Config Initialization
-        hintThresh = Config.Bind<int>("Settings", "hintThresh", 3, "The first deadline that will give you a hint upon reaching it.");
+        hintThresh = Config.Bind<int>("Settings", "hintThresh", 3, "The first deadline that will give you a hint upon reaching it. Minimum value is 2.");
         charmsEnabled = Config.Bind<bool>("Settings", "charmsEnabled", true, "Controls if the custom charms should be enabled. Set to false to disable custom charms.");
 
         ip = Config.Bind<string>("Archipelago", "ip", "localhost", "Server IP");
-        port = Config.Bind<int>("Archipelago", "port", 38281, "Server port.");
+        port = Config.Bind<int>("Archipelago", "port", 38281, new ConfigDescription("Server port.", new AcceptableValueRange<int>(0, 65535)));
         username = Config.Bind<string>("Archipelago", "name", "Player1", "Slot name.");
         pass = Config.Bind<string>("Archipelago", "password", "", "Server password.");
 
@@ -74,7 +74,7 @@ public class Plugin : BaseUnityPlugin
 
         try
         {
-            result = session.TryConnectAndLogin("", name, ItemsHandlingFlags.NoItems, null, ["HintGame"]); // Consider adding tags either TextOnly or AP (possibly HintGame) to bypass game name requirement
+            result = session.TryConnectAndLogin("", name, ItemsHandlingFlags.NoItems, null, ["HintGame"]);
         }
         catch (Exception e)
         {

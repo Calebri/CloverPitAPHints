@@ -22,6 +22,7 @@ public class Plugin : BaseUnityPlugin
     private GameObject dm = null;
     private TextMeshProUGUI tmpro = null;
 
+    private bool connected = false;
     private float timer = 0;
     private int deadnumOld = 0;
 
@@ -88,6 +89,7 @@ public class Plugin : BaseUnityPlugin
         else
         {
             Logger.LogInfo("Successfully connected to Archipelago server.");
+            connected = true;
         }
     }
 
@@ -169,10 +171,27 @@ public class Plugin : BaseUnityPlugin
 
     private void SendHint()
     {
-        Logger.LogInfo("Issuing Archipelago hint to conencted slot.");
-        ReadOnlyCollection<long> missing = session.Locations.AllMissingLocations;
-        var random = new System.Random();
-        long item = missing[random.Next(missing.Count)];
+        if (!connected)
+        {
+            Logger.LogWarning("Attempted to send AP hint but connection never began.");
+            return;
+        }
+
+        Logger.LogInfo("Issuing Archipelago hint to connected slot.");
+
+        long item;
+
+        try
+        {
+            ReadOnlyCollection<long> missing = session.Locations.AllMissingLocations;
+            var random = new System.Random();
+            item = missing[random.Next(missing.Count)];
+        }
+        catch
+        {
+            Logger.LogError("Failed to select random AP item from locations list; aborting hint.");
+            return;
+        }
 
         try
         {

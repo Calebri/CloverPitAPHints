@@ -44,7 +44,7 @@ public class Plugin : BaseUnityPlugin
     {
         // Plugin startup logic
         Logger = base.Logger;
-        Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Logger.LogInfo("Plugin CloverPitAPHints is loaded!");
 
         ImagesPath = Path.Combine(Path.GetDirectoryName(Info.Location), "img");
 
@@ -84,7 +84,10 @@ public class Plugin : BaseUnityPlugin
         if (!result.Successful)
         {
             Logger.LogError("Failed to connect to Archipelago server. Make sure config is valid and restart the game.");
-            return;
+        }
+        else
+        {
+            Logger.LogInfo("Successfully connected to Archipelago server.");
         }
     }
 
@@ -103,18 +106,18 @@ public class Plugin : BaseUnityPlugin
                 SendHint();
             })
             .BuildAndRegister();
-        Logger.LogInfo($"Registered charm {charm1}");
+        Logger.LogInfo($"Successfully registered charm: {charm1}");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode lsm) // Recording exsistance / absence of TMP UI elements in scene
     {
         if (scene.name == "03GameScene") // 03GameScene is the room scene
         {
-            Logger.LogInfo("🎲 Game scene loaded.");
+            Logger.LogInfo("Game scene loaded.");
             dm = GameObject.Find("Deadline Monitor");
             if (dm != null) // Record TMPUGUI component for use elsewhere
             {
-                Logger.LogInfo("🎲 TMProUGUI component found in game scene.");
+                Logger.LogInfo("TMProUGUI component found in game scene.");
                 tmpro = dm.GetComponentInChildren<TextMeshProUGUI>();
             }
             else // Record absence of dm and tmpro
@@ -139,11 +142,10 @@ public class Plugin : BaseUnityPlugin
             if (tmpro != null)
             {
                 int deadnum = GetDeadline(); // Parse deadline monitor text
-                // Logger.LogInfo($"🎲 Current deadline: {deadnum}");
 
                 if (deadnum > deadnumOld && deadnumOld != 0 && deadnum >= hintThresh.Value)
                 {
-                    Logger.LogInfo($"🎲 Deadline increased to {deadnum}");
+                    Logger.LogInfo($"Deadline increased to {deadnum}.");
 
                     SendHint();
                 }
@@ -167,6 +169,7 @@ public class Plugin : BaseUnityPlugin
 
     private void SendHint()
     {
+        Logger.LogInfo("Issuing Archipelago hint to conencted slot.");
         ReadOnlyCollection<long> missing = session.Locations.AllMissingLocations;
         var random = new System.Random();
         long item = missing[random.Next(missing.Count)];

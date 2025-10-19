@@ -13,7 +13,7 @@ using CloverAPI.Content.Charms;
 
 namespace CloverPitAPHints;
 
-[BepInPlugin("github.calebri.cloverpitaphints", "CloverPitAPHints", "1.0.0")]
+[BepInPlugin("github.calebri.cloverpitaphints", "CloverPitAPHints", "1.1.0")]
 [BepInDependency("ModdingAPIs.cloverpit.CloverAPI", BepInDependency.DependencyFlags.HardDependency)]
 public class Plugin : BaseUnityPlugin
 {

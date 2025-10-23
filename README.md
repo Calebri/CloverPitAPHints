@@ -1,5 +1,5 @@
 # CloverPit AP Hints
-A BepInEx plugin designed to implement CloverPit as a hint game for the [Archipelago Multiworld](archipelago.gg).
+A BepInEx plugin designed to implement CloverPit as a hint game for the [Archipelago Multiworld](https://archipelago.gg).
 
 I originally wanted to make a full APWorld for this game, but I realized that I didn't know how to use BepInEx or mod games in general, so this is the best I can do right now.
 
@@ -8,7 +8,7 @@ Doing certain objectives sends a hint to the multiworld. Sending a hint will inf
 
 ## Usage
 1. Download and install [BepInEx](https://thunderstore.io/c/clover-pit/p/BepInEx/BepInExPack/) for CloverPit.
-1. Download and install [CloverAPI](thunderstore.io/c/clover-pit/p/ModdingAPIs/CloverAPI/).
+1. Download and install [CloverAPI](https://thunderstore.io/c/clover-pit/p/ModdingAPIs/CloverAPI/).
 1. Download and install the CloverPit AP Hints plugin. Make sure the `.dll` files are in a folder within `CloverPit/BepInEx/plugins`.
 1. Run the game once to generate the config file.
 1. The config file is accessible in `CloverPit/BepInEx/config/github.calebri.cloverpitaphints.cfg`. There you can set the IP, port, and password of the Archipelago server you want to connect to, as well as the name of the slot you want to hint for. You can also configure the first deadline that will send a hint and whether custom charms are enabled.
